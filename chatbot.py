@@ -48,10 +48,44 @@ for talk in talks_id:
         questions.append(line_id[talk[i]])
         answers.append(line_id[talk[i+1]])
 
-cleaned_conversations = []
+cleaned_questions = []
 for question in questions:
-    cleaned_conversations.append(clean_text(question))
+    cleaned_questions.append(clean_text(question))
 
-cleaned_conversations = []
+cleaned_answers = []
 for answer in answers:
-    cleaned_conversations.append(clean_text(answer))
+    cleaned_answers.append(clean_text(answer))
+
+words_count = {}
+for question in cleaned_questions:
+    for word in question.split():
+        if word not in words_count:
+            words_count[word] = 1
+        else:
+            words_count[word] += 1
+
+for answer in cleaned_answers:
+    for word in answer.split():
+        if word not in words_count:
+            words_count[word] = 1
+        else:
+            words_count[word] += 1
+
+limit: int = 20
+
+questions_id = {}
+word_id = 0
+for word, count in words_count.items():
+    if count >= limit:
+        questions_id[word] = word_id
+        word_id += 1
+
+answers_id = {}
+word_id = 0
+for word, count in words_count.items():
+    if count >= limit:
+        answers_id[word] = word_id
+        word_id += 1
+
+
+tokens = ['<PAD>']
