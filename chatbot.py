@@ -88,4 +88,44 @@ for word, count in words_count.items():
         word_id += 1
 
 
-tokens = ['<PAD>']
+tokens = ['<PAD>', '<EOS>', '<OUT>', '<SOS>']
+for token in tokens:
+    questions_id[token] = len(token)+1
+
+for token in tokens:
+    answers_id[token] = len(token)+1
+
+answers_words = {w_i: w for w, w_i in answers_id.items()}
+
+
+for i in range(len(cleaned_answers)):
+    cleaned_answers[i] += ' <EOS>'
+
+questions_to_int = []
+for question in cleaned_questions:
+    ints = []
+    for word in question.split():
+        if word not in questions_id:
+            ints.append(questions_id['<OUT>'])
+        else:
+            ints.append(questions_id[word])
+    questions_to_int.append(ints)
+
+answers_to_int = []
+for answer in cleaned_answers:
+    ints = []
+    for word in answer.split():
+        if word not in answers_id:
+            ints.append(answers_id['<OUT>'])
+        else:
+            ints.append(answers_id[word])
+    answers_to_int.append(ints)
+
+cleaned_sorted_questions = []
+cleaned_sorted_answers = []
+
+for size in range(1, 26):
+    for i in enumerate(questions_to_int):
+        if len(i[1]) == size:
+            cleaned_sorted_questions.append(questions_to_int[i[0]])
+            cleaned_sorted_answers.append(answers_to_int[i[0]])
